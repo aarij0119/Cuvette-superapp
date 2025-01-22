@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useRef, useState } from 'react';
 import { FaCaretUp, FaSortDown } from "react-icons/fa";
 
@@ -10,6 +11,7 @@ const Timer = () => {
 
     const [isRunning, setIsRunning] = useState(false);
     const intervalRef = useRef(null);
+    const [Images, setImages] = useState([]);
 
     const IncreaseHour = () => {
         let currentHours = parseInt(timer.hours);
@@ -65,6 +67,11 @@ const Timer = () => {
             }, 1000);
         }
     };
+    const getImages = async () => {
+        const response = await axios.get('http://localhost:3000/images');
+        setImages(response.data);
+        console.log(Images)
+    }
 
     return (
         <>
@@ -99,6 +106,15 @@ const Timer = () => {
                 >
                     Start
                 </button>
+            </div>
+            <button className='bg-green-700 w-fit p-2 rounded-2xl text-white' onClick={getImages}>Get Images</button>
+            <div className='flex gap-3 flex-wrap'>
+            {Images.map((image,idx) => (
+                <div key={idx} className='w-[24%] bg-zinc-950 pb-12 p-3'>
+                    <img src={image.url}  className='bg-cover w-full h-full'/>
+                    <h4 className='text-white pt-4'>{image.name}</h4>
+                </div>
+            ))}
             </div>
         </>
     );
